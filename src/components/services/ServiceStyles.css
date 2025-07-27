@@ -1,0 +1,617 @@
+/* Grid layout */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  perspective: 1000px;
+}
+
+@media (max-width: 1024px) {
+  .service-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .service-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Base tile styles */
+.service-tile {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.5);
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  background-color: #2a2a2a;
+  will-change: transform, width, height;
+  cursor: pointer;
+}
+
+.service-tile:hover {
+  transform: scale(1.03);
+  z-index: 20;
+  box-shadow: 0 20px 40px -20px rgba(255, 107, 0, 0.4);
+}
+
+.service-tile:hover ~ .service-tile {
+  transform: translateX(20px);
+}
+
+.service-tile.expanded {
+  display: flex;
+  flex-direction: row;
+}
+
+.service-tile-container {
+  position: relative;
+  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  height: 350px;
+  width: 100%;
+  z-index: 1;
+  transform-origin: center center;
+  will-change: transform, width, height;
+}
+
+.service-tile-container.expanded-container {
+  z-index: 100;
+  height: 550px !important;
+}
+
+.service-grid .service-tile-container {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+/* First row hover effects */
+.service-grid:has(.service-tile-container:nth-child(1).hovered) {
+  grid-template-columns: 3fr 1fr;
+  grid-template-rows: auto auto;
+  row-gap: 30px;
+}
+
+.service-grid:has(.service-tile-container:nth-child(1).hovered) .service-tile-container:nth-child(1) {
+  z-index: 10;
+  height: 550px;
+}
+
+.service-grid:has(.service-tile-container:nth-child(1).hovered) .service-tile-container:nth-child(2) {
+  transform: scale(0.85);
+  transform-origin: left center;
+  z-index: 5;
+}
+
+.service-grid:has(.service-tile-container:nth-child(2).hovered) {
+  grid-template-columns: 1fr 3fr;
+  grid-template-rows: auto auto;
+  row-gap: 30px;
+}
+
+.service-grid:has(.service-tile-container:nth-child(2).hovered) .service-tile-container:nth-child(2) {
+  z-index: 10;
+  height: 550px;
+}
+
+.service-grid:has(.service-tile-container:nth-child(2).hovered) .service-tile-container:nth-child(1) {
+  transform: scale(0.85);
+  transform-origin: right center;
+  z-index: 5;
+}
+
+/* Row interaction fixes */
+.service-grid:has(.service-tile-container:nth-child(1).hovered) .service-tile-container:nth-child(3),
+.service-grid:has(.service-tile-container:nth-child(1).hovered) .service-tile-container:nth-child(4),
+.service-grid:has(.service-tile-container:nth-child(2).hovered) .service-tile-container:nth-child(3),
+.service-grid:has(.service-tile-container:nth-child(2).hovered) .service-tile-container:nth-child(4),
+.service-grid:has(.service-tile-container:nth-child(3).hovered) .service-tile-container:nth-child(1),
+.service-grid:has(.service-tile-container:nth-child(3).hovered) .service-tile-container:nth-child(2),
+.service-grid:has(.service-tile-container:nth-child(4).hovered) .service-tile-container:nth-child(1),
+.service-grid:has(.service-tile-container:nth-child(4).hovered) .service-tile-container:nth-child(2) {
+  transform: none;
+  height: 350px;
+  transition-delay: 0.1s;
+}
+
+/* Second row hover effects */
+.service-grid:has(.service-tile-container:nth-child(3).hovered) {
+  grid-template-columns: 3fr 1fr;
+}
+
+.service-grid:has(.service-tile-container:nth-child(3).hovered) .service-tile-container:nth-child(3) {
+  z-index: 10;
+  height: 550px;
+}
+
+.service-grid:has(.service-tile-container:nth-child(3).hovered) .service-tile-container:nth-child(4) {
+  transform: scale(0.85);
+  transform-origin: left center;
+  z-index: 5;
+}
+
+.service-grid:has(.service-tile-container:nth-child(4).hovered) {
+  grid-template-columns: 1fr 3fr;
+}
+
+.service-grid:has(.service-tile-container:nth-child(4).hovered) .service-tile-container:nth-child(4) {
+  z-index: 10;
+  height: 550px;
+}
+
+.service-grid:has(.service-tile-container:nth-child(4).hovered) .service-tile-container:nth-child(3) {
+  transform: scale(0.85);
+  transform-origin: right center;
+  z-index: 5;
+}
+
+/* Fixed height for non-hovered tiles */
+.service-grid .service-tile-container:not(.hovered):not(.expanded-container) {
+  height: 350px !important;
+  z-index: 1;
+}
+
+/* Mobile and tablet expanded effects */
+.service-grid:has(.service-tile-container.expanded-container) {
+  grid-template-columns: 1fr;
+}
+
+/* Background elements */
+.service-tile-background {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  background-color: #000;
+  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, width;
+}
+
+.service-tile.expanded .service-tile-background {
+  width: 65%;
+  left: auto;
+  right: 0;
+  border-radius: 0 16px 16px 0;
+}
+
+.service-tile-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: scale(1.1);
+  will-change: opacity, transform;
+}
+
+.service-tile-image.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Content elements */
+.service-tile-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100%;
+  padding: 1.5rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0) 100%);
+  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, width;
+}
+
+.service-tile.expanded .service-tile-content {
+  width: 35%;
+  left: 0;
+  background: #2a2a2a;
+  justify-content: center;
+  border-radius: 16px 0 0 16px;
+  padding: 2.5rem;
+}
+
+.service-tile-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 0.5rem;
+  transform: translateY(0);
+  transition: transform 0.6s ease, font-size 0.6s ease;
+}
+
+.service-tile.expanded .service-tile-title {
+  font-size: 2rem;
+  margin-bottom: 1.25rem;
+  color: #ff6b00;
+}
+
+.service-tile-description {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.5s ease;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.service-tile.expanded .service-tile-description {
+  height: auto;
+  visibility: visible;
+  position: relative;
+}
+
+.service-tile-description.fade-in-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.service-tile-description p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  color: #e0e0e0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Link and arrow styles */
+.service-tile-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ff6b00;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.service-tile-link:hover {
+  color: #ff9148;
+}
+
+.service-tile-description .service-tile-link {
+  display: none; /* Hidden by default in non-expanded tiles */
+}
+
+.service-tile.expanded .service-tile-description .service-tile-link {
+  margin-top: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-tile.expanded .service-tile-description .service-tile-link:after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #ff6b00;
+  transition: width 0.3s ease;
+}
+
+.service-tile.expanded .service-tile-description .service-tile-link:hover:after {
+  width: 100%;
+}
+
+.service-tile-arrow {
+  width: 18px;
+  height: 18px;
+  margin-left: 8px;
+  transition: transform 0.3s ease;
+}
+
+.service-tile-link:hover .service-tile-arrow {
+  transform: translateX(5px);
+}
+
+/* Forward arrow button - only visible on mobile by default */
+.forward-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #ff6b00;
+  border: none;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 200;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.4);
+  animation: pulse-orange 2s infinite;
+}
+
+.forward-button svg {
+  width: 24px;
+  height: 24px;
+  color: white;
+  transform: rotate(-45deg); /* Rotate to point 45° up */
+}
+
+.forward-button:hover {
+  background-color: #ff8533;
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(255, 107, 0, 0.6);
+}
+
+@keyframes pulse-orange {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(255, 107, 0, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(255, 107, 0, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(255, 107, 0, 0.4);
+  }
+}
+
+/* Back button for mobile/tablet */
+.mobile-back-button {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 200;
+  transition: all 0.3s ease;
+}
+
+.mobile-back-button svg {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.mobile-back-button:hover {
+  background-color: rgba(255, 107, 0, 0.8);
+  transform: scale(1.1);
+}
+
+/* Smoother scale transitions for non-hovered tiles */
+.service-grid:has(.service-tile-container:nth-child(1).hovered) .service-tile-container:nth-child(2),
+.service-grid:has(.service-tile-container:nth-child(2).hovered) .service-tile-container:nth-child(1),
+.service-grid:has(.service-tile-container:nth-child(3).hovered) .service-tile-container:nth-child(4),
+.service-grid:has(.service-tile-container:nth-child(4).hovered) .service-tile-container:nth-child(3) {
+  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Service image hover */
+.service-image-hover {
+  transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+.service-tile:hover .service-image-hover {
+  transform: scale(1.1);
+  filter: brightness(0.7);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  /* Spacing for expanded tiles */
+  .service-grid:has(.service-tile-container.expanded-container) {
+    gap: 30px;
+  }
+  
+  .service-tile-container.expanded-container {
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 100;
+    scroll-margin-top: 20px;
+    scroll-margin-bottom: 20px;
+    animation: scroll-to-view 0.3s forwards;
+  }
+  
+  @keyframes scroll-to-view {
+    to { transform: translateY(0); }
+  }
+  
+  /* Grid adjustments */
+  .service-grid:has(.service-tile-container:nth-child(n).hovered) {
+    grid-template-columns: 1fr;
+  }
+
+  .service-grid:has(.service-tile-container:nth-child(n).hovered) .service-tile-container:nth-child(n):not(.hovered) {
+    transform: none;
+  }
+
+  .service-tile-container.hovered,
+  .service-tile-container.expanded-container {
+    height: 550px !important;
+    transition: height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .service-tile-container:not(.expanded-container) {
+    height: 350px !important;
+    transition: height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Tile layout adjustments */
+  .service-tile.expanded {
+    flex-direction: column;
+  }
+
+  .service-tile:not(.expanded) .service-tile-background {
+    width: 100%;
+    height: 100%;
+  }
+
+  .service-tile.expanded .service-tile-background,
+  .service-tile.expanded .service-tile-content {
+    width: 100%;
+    border-radius: 16px;
+  }
+
+  .service-tile.expanded .service-tile-background {
+    height: 50%;
+    position: relative;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .service-tile.expanded .service-tile-content {
+    height: 50%;
+    justify-content: flex-start;
+    border-radius: 0 0 16px 16px;
+    overflow-y: auto;
+    padding: 1.5rem;
+    max-width: 100%;
+    word-break: break-word;
+  }
+
+  /* Description visibility */
+  .service-tile:not(.expanded) .service-tile-description {
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .service-tile.expanded .service-tile-description {
+    opacity: 1;
+    transform: translateY(0);
+    height: auto;
+    visibility: visible;
+    transition: opacity 0.3s ease 0.2s, transform 0.5s ease 0.2s, height 0.3s ease, visibility 0s;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  .service-tile.expanded .service-tile-description .service-tile-link {
+    display: none;
+  }
+  
+  /* Forward button */
+  .forward-button {
+    display: flex;
+    top: 15px;
+    right: 15px;
+    width: 48px;
+    height: 48px;
+  }
+  
+  .forward-button svg {
+    width: 28px;
+    height: 28px;
+  }
+  
+  /* Typewriter text */
+  .service-container .typewriter-container {
+    margin: 50px 0;
+    padding: 0 15px;
+  }
+  
+  .service-container .typewriter-text {
+    font-size: 1.5rem;
+    padding: 0;
+    line-height: 1.4;
+    max-width: 100%;
+  }
+  
+  .service-container .typewriter-text::after {
+    width: 40px;
+    height: 3px;
+    bottom: -8px;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .service-tile.expanded {
+    flex-direction: row;
+  }
+
+  .service-tile.expanded .service-tile-background {
+    width: 60%;
+    height: 100%;
+  }
+
+  .service-tile.expanded .service-tile-content {
+    width: 40%;
+    height: 100%;
+  }
+  
+  /* Show text link for tablets */
+  .service-tile.expanded .service-tile-description .service-tile-link {
+    display: inline-flex;
+    font-size: 1.1rem;
+  }
+  
+  /* Hide forward button on tablets */
+  .forward-button {
+    display: none;
+  }
+  
+  /* Typewriter text */
+  .service-container .typewriter-container {
+    margin: 60px 0;
+  }
+  
+  .service-container .typewriter-text {
+    font-size: 1.8rem;
+    max-width: 600px;
+  }
+  
+  .service-container .typewriter-text::after {
+    width: 50px;
+    bottom: -10px;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 1025px) {
+  /* Show text link for desktop */
+  .service-tile.expanded .service-tile-description .service-tile-link {
+    display: inline-flex;
+    font-size: 1.1rem;
+  }
+  
+  /* Hide buttons on desktop */
+  .forward-button,
+  .mobile-back-button {
+    display: none;
+  }
+
+  /* Fade in description text after expansion */
+  .service-tile.expanded .service-tile-description {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.4s, transform 0.5s ease 0.4s;
+  }
+  
+  .service-tile.expanded .service-tile-description.fade-in-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,245 @@
+  /* Become a client */
+  #left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.85); /* translucent */
+    color: #fff;
+  }
+  
+  #right {
+    background: #160f0f; /* solid */
+    color: #fff;
+    padding: 2rem 2.5rem;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  
+  /* Overlay styles */
+  .overlay-active {
+    overflow: hidden !important;
+    position: relative;
+  }
+  
+  .overlay-active::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 100;
+    pointer-events: none;
+  }
+  
+  /* Fixed z-index for the form */
+  .fixed.z-101 {
+    z-index: 101 !important;
+  }
+  
+  #contact-heading {
+    font-size: 2rem;
+    text-align: left;
+  }
+  
+  #down-arrow {
+    width: 100px;
+    margin: 0 auto;
+    display: none;
+  }
+  
+  #contact-subtext {
+    font-size: 1rem;
+    text-align: left;
+    display: block;
+  }
+  
+  #form-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  #name-label,
+  #email-label {
+    margin: 0.5rem 0;
+    display: block;
+  }
+  
+  #input-wrapper {
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+  }
+  
+  #name-input-box,
+  #email-input-box {
+    width: 100%;
+  }
+  
+  
+  #name-input,
+  #email-input {
+    width: 100%;
+  }
+  
+  #message-label {
+    margin: 0.5rem 0;
+    display: block;
+  }
+  
+  #message-wrapper {
+    width: 100%;
+  }
+  
+  #message-textarea {
+    height: 150px;
+  }
+  
+  #submit-btn {
+    width: 100%;
+    background-color: #4c3c3c;
+    transition: all 0.3s ease;
+  }
+  
+  #submit-btn:hover {
+    background-color: #ff5722;
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  #close-btn {
+    color: white;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    cursor: pointer;
+    font-size: 30px;
+    transition: all 0.3s ease;
+    z-index: 102; /* Make sure the close button is above everything */
+  }
+  
+  #close-btn:hover {
+    color: #ff5722 !important;
+    transform: scale(1.1);
+  }
+
+  @media (max-width: 1024px) {
+    #left, #right {
+      padding: 1.5rem 1rem;
+    }
+  }
+  
+  /* Mobile styles - form only */
+  @media (max-width: 768px) {
+    /* Container */
+    .fixed.z-101.inset-0.w-full.h-screen.flex.items-center.justify-center.shadow-lg.overflow-hidden {
+      flex-direction: column !important;
+      height: 100% !important;
+      min-height: 100vh;
+    }
+    
+    /* Hide left section, show only right */
+    #left {
+      display: none;
+    }
+    
+    /* Right section (form) styling */
+    #right {
+      width: 100% !important;
+      min-width: 0;
+      max-width: 100vw;
+      height: 100vh;
+      min-height: 100vh;
+      padding: 1.5rem;
+      background: #160f0f; 
+      color: #fff; 
+    }
+    
+    /* Heading */
+    #contact-heading {
+      font-size: 1.75rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    /* Subtext */
+    #contact-subtext {
+      font-size: 0.95rem;
+      line-height: 1.4;
+      margin-bottom: 2rem;
+    }
+    
+    /* Form fields */
+    #contact-form label {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    /* Inputs */
+    #email-input, #name-input {
+      border-radius: 1rem;
+      padding: 1rem;
+      background-color: rgba(76, 60, 60, 0.5); 
+      border: none;
+    }
+    
+    /* Textarea */
+    #message-textarea {
+      height: 150px;
+      border-radius: 1rem;
+      padding: 1rem;
+      background-color: rgba(76, 60, 60, 0.5);
+      border: none;
+      margin-bottom: 1rem;
+    }
+    
+    /* Submit button */
+    #submit-btn {
+      width: 100%;
+      height: 55px;
+      border-radius: 9999px;
+      background-color: #4c3c3c; 
+      color: #fff;
+      font-weight: 600;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    #submit-btn:hover {
+      background-color: #ff5722;
+      transform: scale(1.02);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Close button */
+    #close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      color: white; 
+    }
+    
+    #close-btn:hover {
+      color: #ff5722 !important;
+      transform: scale(1.1);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    #right {
+      padding: 1.5rem 1rem;
+    }
+    #contact-heading {
+      font-size: 1.5rem;
+    }
+    #contact-subtext {
+      font-size: 0.9rem;
+    }
+  }

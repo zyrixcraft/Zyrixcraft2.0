@@ -1,0 +1,6 @@
+# Robots.txt file for Zyrixcraft
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://zyrixcraft.com/sitemap.xml 

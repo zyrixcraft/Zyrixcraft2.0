@@ -1,0 +1,41 @@
+.not-found-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+}
+
+.col-sm-12, .col-md-12 {
+  width: 100%;
+  padding: 0 15px;
+}
+
+.mt-5 {
+  margin-top: 3rem;
+}
+
+.mb-5 {
+  margin-bottom: 3rem;
+}
+
+@media (max-width: 767px) {
+  .not-found-container {
+    padding: 20px;
+  }
+  
+  .container {
+    padding: 10px;
+  }
+}
