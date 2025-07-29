@@ -1,48 +1,50 @@
-import { FaCode, FaPaintBrush, FaLaptopCode, FaRobot } from 'react-icons/fa';
 import '../App.css';
-import '../components/services/ServiceStyles.css';
+import '../components/services/FlippingCardStyles.css';
 
-// import {
-//   ServiceContainer,
-//   ServiceHeading,
-//   ServiceTile
-// } from '../components';
 import ServiceContainer from '../components/services/ServiceContainer';
 import ServiceHeading from '../components/services/ServiceHeading';
-import ServiceTile from '../components/services/ServiceTile';   
+import FlippingCard from '../components/services/FlippingCard';
 // Service data
 const serviceData = [
   {
     title: "Web Projects",
     description: "We craft responsive, high-performance websites that align with your brand and deliver seamless user experiences across all devices. Our development approach ensures optimal performance and security.",
-    icon: <FaCode />,
     link: "https://zyrixcraft-project-showcase.vercel.app/",
-    imageUrl: "https://images.unsplash.com/photo-1587620962725-abab7fe55159?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
-    imageAlt: "Web Development",
+    images: [
+      "assets/portfolio/1.jpg",
+      "assets/portfolio/2.jpg",
+      "assets/portfolio/3.jpg",
+    ],
   },
   {
     title: "Graphic Design",
     description: "From logos to full branding kits, we create visually compelling designs that communicate your message and capture your audience's attention. Our design philosophy blends creativity with strategic messaging.",
-    icon: <FaPaintBrush />,
     link: "https://book-animation-psi.vercel.app/",
-    imageUrl: "https://images.unsplash.com/photo-1626785774573-4b799315345d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
-    imageAlt: "Graphic Design",
+    images: [
+      "assets/portfolio/4.png",
+      "assets/portfolio/5.png",
+      "assets/portfolio/6.png",
+    ],
   },
   {
     title: "UX/UI Design",
     description: "Our user-centric approach ensures intuitive, engaging interfaces that enhance usability and turn users into loyal customers. We focus on creating experiences that feel natural and delightful.",
-    icon: <FaLaptopCode />,
     link: "https://ui-ux-ruddy.vercel.app/",
-    imageUrl: "assets/portfolio/9.png",
-    imageAlt: "UX/UI Design",
+    images: [
+      "assets/portfolio/8.jpg",
+      "assets/portfolio/7.png",
+      "assets/portfolio/9.jpg",
+    ],
   },
   {
     title: "Smart Solutions",
     description: "We develop custom automation solutions that streamline your business processes, reduce manual workload, and increase efficiency. Our solutions are tailored to your specific needs and integrate seamlessly with your existing systems.",
-    icon: <FaRobot />,
     link: "/automation",
-    imageUrl: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
-    imageAlt: "Automated Solutions",
+    images: [
+      "assets/portfolio/10.jpg",
+      "assets/portfolio/11.jpg",
+      "assets/portfolio/12.jpg",
+    ],
   }
 ];
 
@@ -57,14 +59,14 @@ const Portfolio = () => {
           <ServiceHeading title="OUR PORTFOLIO" />
         </div>
         
-        {/* Services grid */}
-        <div className="service-grid mb-20">
+        {/* Portfolio grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
           {serviceData.map((service, index) => (
-            <ServiceTile
+            <FlippingCard
               key={index}
               title={service.title}
               description={service.description}
-              imageUrl={service.imageUrl}
+              images={service.images}
               link={service.link}
               index={index}
             />

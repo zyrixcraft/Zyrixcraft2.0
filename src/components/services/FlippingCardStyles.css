@@ -1,0 +1,321 @@
+/* Flipping Card Container */
+.flipping-card-container {
+  perspective: 1000px;
+  width: 100%;
+  height: 400px;
+  cursor: pointer;
+}
+
+/* Main Card */
+.flipping-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.7);
+}
+
+.flipping-card:hover {
+  box-shadow: 0 25px 45px -20px rgba(255, 107, 0, 0.5);
+}
+
+.flipping-card.flipped {
+  transform: rotateY(180deg);
+}
+
+/* Card Sides */
+.flipping-card-front,
+.flipping-card-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  overflow: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flipping-card-front {
+  z-index: 2;
+  transform: rotateY(0deg);
+}
+
+.flipping-card-back {
+  transform: rotateY(180deg);
+  z-index: 1;
+  background: linear-gradient(135deg, #ff6b00 0%, #ff8533 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flipping-card.flipped .flipping-card-front {
+  z-index: 1;
+}
+
+.flipping-card.flipped .flipping-card-back {
+  z-index: 2;
+}
+
+/* Front Side Styles */
+.flipping-card-front {
+  background-color: #111;
+}
+.card-image-container {
+  position: relative;
+  width: 100%;
+  height: 70%;
+  overflow: hidden;
+}
+
+.card-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  transform: scale(1.1);
+}
+
+.card-image.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%);
+  z-index: 1;
+}
+
+.card-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  padding: 1.5rem;
+  background: #2a2a2a;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.flip-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #ff6b00;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.flip-arrow {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.flipping-card:hover .flip-arrow {
+  transform: translateX(5px);
+}
+
+/* Back Side Styles */
+.back-content {
+  padding: 2rem;
+  text-align: center;
+  color: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.back-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.back-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.95);
+  text-align: center;
+  max-width: 90%;
+}
+
+.back-link-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  background-color: white;
+  color: #ff6b00;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-bottom: 1rem;
+}
+
+.back-link-button:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.button-arrow {
+  width: 18px;
+  height: 18px;
+  margin-left: 8px;
+  transition: transform 0.3s ease;
+}
+
+.back-link-button:hover .button-arrow {
+  transform: translateX(3px);
+}
+
+.back-flip-indicator {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+/* Hover Effects */
+.flipping-card-container:hover .flipping-card:not(.flipped) {
+  transform: translateY(-5px);
+}
+
+.flipping-card-container:hover .card-image.active {
+  transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .flipping-card-container {
+    height: 350px;
+  }
+  
+  .card-content {
+    padding: 1rem;
+  }
+  
+  .card-title {
+    font-size: 1.25rem;
+  }
+  
+  .flip-indicator {
+    font-size: 0.8rem;
+  }
+  
+  .back-content {
+    padding: 1.5rem;
+  }
+  
+  .back-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .back-description {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .back-link-button {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .flipping-card-container {
+    height: 320px;
+  }
+  
+  .card-content {
+    height: 35%;
+  }
+  
+  .card-image-container {
+    height: 65%;
+  }
+  
+  .back-content {
+    padding: 1rem;
+  }
+  
+  .back-description {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+}
+
+/* Animation for card entrance */
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(30px) rotateY(-15deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateY(0deg);
+  }
+}
+
+.flipping-card-container {
+  animation: cardEntrance 0.8s ease-out forwards;
+}
+
+/* Staggered animation delays */
+.flipping-card-container:nth-child(1) { animation-delay: 0.1s; }
+.flipping-card-container:nth-child(2) { animation-delay: 0.2s; }
+.flipping-card-container:nth-child(3) { animation-delay: 0.3s; }
+.flipping-card-container:nth-child(4) { animation-delay: 0.4s; }
+
+/* Glow effect on hover */
+.flipping-card:hover {
+  box-shadow: 
+    0 25px 45px -20px rgba(255, 107, 0, 0.5),
+    0 0 30px rgba(255, 107, 0, 0.3),
+    inset 0 0 0 1px rgba(255, 107, 0, 0.2);
+}
+
+/* Enhanced orange glow for flipped cards */
+.flipping-card.flipped {
+  box-shadow: 
+    0 25px 45px -20px rgba(255, 107, 0, 0.7),
+    0 0 40px rgba(255, 107, 0, 0.5),
+    inset 0 0 0 2px rgba(255, 107, 0, 0.3);
+}
