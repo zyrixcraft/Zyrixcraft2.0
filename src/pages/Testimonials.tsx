@@ -101,7 +101,7 @@ const Testimonials = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
-            className="max-w-4xl mx-auto text-center"
+            className="max-w-4xl mx-auto text-center flex flex-col justify-center h-[400px]"
           >
             {/* Quote */}
             <blockquote className="text-2xl sm:text-3xl md:text-4xl font-light leading-relaxed mb-12 text-gray-200">
