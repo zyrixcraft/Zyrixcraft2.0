@@ -4,6 +4,7 @@ import Service from "../pages/Service"
 import Footer from "../pages/Footer"
 import PcAnimation from "../pages/PcAnimation"
 import Portfolio from "../pages/Portfolio"
+import Testimonials from "../pages/Testimonials"
 
 
 
@@ -17,6 +18,7 @@ function Wrapper() {
       <Service />
       <PcAnimation />
       <Portfolio />
+      <Testimonials />
       <Footer  />
       
     </div>
