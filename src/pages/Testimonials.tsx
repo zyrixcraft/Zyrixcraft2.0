@@ -136,10 +136,10 @@ const Testimonials = () => {
 
       {/* Horizontal Scrolling Testimonials */}
       <div className="relative">
-        <div className="flex gap-6 overflow-hidden pb-4">
+        <div className="flex overflow-hidden pb-4">
           <motion.div
-            className="flex gap-6 flex-shrink-0"
-            animate={{ x: ["0%", "-100%"] }}
+            className="flex flex-shrink-0"
+            animate={{ x: ["0%", "-50%"] }}
             transition={{
               duration: 30,
               ease: "linear",
@@ -149,7 +149,7 @@ const Testimonials = () => {
             {[...testimonialsData, ...testimonialsData].map((testimonial, index) => (
               <motion.div
                 key={`${testimonial.id}-${index}`}
-                className={`flex-shrink-0 w-80 p-6 rounded-2xl cursor-pointer transition-all duration-300 ${
+                className={`flex-shrink-0 w-80 p-6 rounded-2xl cursor-pointer transition-all duration-300 mr-6 ${
                   selectedTestimonial.id === testimonial.id
                     ? 'bg-gray-1000 border-2 border-orange-600/50 shadow-[0_0_20px_rgba(255,107,0,0.3)]'
                     : 'bg-gray-900 border-2 border-transparent hover:border-orange-600/30 hover:shadow-[0_0_15px_rgba(255,107,0,0.2)]'
@@ -190,12 +190,12 @@ const Testimonials = () => {
 
       {/* Second row moving in opposite direction */}
       <div className="relative mt-6">
-        <div className="flex gap-6 overflow-hidden pb-4">
+        <div className="flex overflow-hidden pb-4">
           <motion.div
-            className="flex gap-6 flex-shrink-0"
-            animate={{ x: ["-100%", "0%"] }}
+            className="flex flex-shrink-0"
+            animate={{ x: ["-50%", "0%"] }}
             transition={{
-              duration: 50,
+              duration: 30,
               ease: "linear",
               repeat: Infinity,
             }}
@@ -203,7 +203,7 @@ const Testimonials = () => {
             {[...testimonialsData.slice().reverse(), ...testimonialsData.slice().reverse()].map((testimonial, index) => (
             <motion.div
               key={`reverse-${testimonial.id}-${index}`}
-              className={`flex-shrink-0 w-80 p-6 rounded-2xl cursor-pointer transition-all duration-300 ${
+              className={`flex-shrink-0 w-80 p-6 rounded-2xl cursor-pointer transition-all duration-300 mr-6 ${
                 selectedTestimonial.id === testimonial.id
                   ? 'bg-gray-1000 border-2 border-orange-600/50 shadow-[0_0_20px_rgba(255,107,0,0.3)]'
                   : 'bg-gray-900 border-2 border-transparent hover:border-orange-600/30 hover:shadow-[0_0_15px_rgba(255,107,0,0.2)]'
