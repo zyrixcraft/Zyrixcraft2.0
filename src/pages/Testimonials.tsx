@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence, useMotionValue, animate } from 'framer-motion';
 import '../App.css';
 
 interface Testimonial {
@@ -71,13 +71,124 @@ const testimonialsData: Testimonial[] = [
 
 const Testimonials = () => {
   const [selectedTestimonial, setSelectedTestimonial] = useState<Testimonial>(testimonialsData[0]);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [isRow1Paused, setIsRow1Paused] = useState(false);
+  const [isRow2Paused, setIsRow2Paused] = useState(false);
 
-  const handleTestimonialClick = (testimonial: Testimonial) => {
-    setSelectedTestimonial(testimonial);
+  const motionX = useMotionValue(0);
+  const motionXReverse = useMotionValue(0);
+
+  const animationControls = useRef<any>(null);
+  const animationControlsReverse = useRef<any>(null);
+
+  const row1Ref = useRef<HTMLDivElement>(null);
+  const [dragConstraints, setDragConstraints] = useState(0);
+
+  const totalDuration = 30; // seconds for one full loop
+
+  // Check for touch device on mount
+  useEffect(() => {
+    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+  }, []);
+
+  // Calculate constraints for the animation
+  useEffect(() => {
+    const calculateConstraints = () => {
+      if (row1Ref.current) {
+        const contentWidthOfOneSet = row1Ref.current.scrollWidth / 2;
+        setDragConstraints(-contentWidthOfOneSet);
+      }
+    };
+    const timeoutId = setTimeout(calculateConstraints, 100);
+    window.addEventListener('resize', calculateConstraints);
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', calculateConstraints);
+    };
+  }, []);
+
+  // Generic function to animate a single row
+  const animateRow = useCallback((motionValue: any, controlsRef: React.MutableRefObject<any>, from: number, to: number) => {
+    if (dragConstraints === 0) return;
+    controlsRef.current?.stop();
+
+    const currentX = motionValue.get();
+    const remainingDistance = to - currentX;
+    const duration = (totalDuration * remainingDistance) / (to - from);
+
+    controlsRef.current = animate(motionValue, [currentX, to], {
+      duration: Math.abs(duration),
+      ease: "linear",
+      onComplete: () => {
+        motionValue.set(from);
+        controlsRef.current = animate(motionValue, [from, to], {
+          duration: totalDuration,
+          ease: "linear",
+          repeat: Infinity,
+          repeatType: "loop",
+        });
+      }
+    });
+  }, [dragConstraints]);
+
+  const runAnimation1 = useCallback(() => {
+    setIsRow1Paused(false);
+    animateRow(motionX, animationControls, 0, dragConstraints);
+  }, [animateRow, motionX, dragConstraints]);
+  const pauseAnimation1 = useCallback(() => {
+    setIsRow1Paused(true);
+    animationControls.current?.stop();
+  }, []);
+
+  const runAnimation2 = useCallback(() => {
+    setIsRow2Paused(false);
+    animateRow(motionXReverse, animationControlsReverse, dragConstraints, 0);
+  }, [animateRow, motionXReverse, dragConstraints]);
+  const pauseAnimation2 = useCallback(() => {
+    setIsRow2Paused(true);
+    animationControlsReverse.current?.stop();
+  }, []);
+  
+  // Start the initial animation
+  useEffect(() => {
+    if (dragConstraints !== 0) {
+      runAnimation1();
+      runAnimation2();
+    }
+  }, [dragConstraints, runAnimation1, runAnimation2]);
+
+  // Effect to resume animation on scroll for touch devices
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isTouchDevice) {
+        if (isRow1Paused) runAnimation1();
+        if (isRow2Paused) runAnimation2();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isTouchDevice, isRow1Paused, isRow2Paused, runAnimation1, runAnimation2]);
+
+
+  // Event handlers for the first row
+  const eventHandlers1 = {
+    onMouseEnter: !isTouchDevice ? pauseAnimation1 : undefined,
+    onMouseLeave: !isTouchDevice ? runAnimation1 : undefined,
+    onDragStart: pauseAnimation1,
+    onDragEnd: runAnimation1,
+  };
+
+  // Event handlers for the second row
+  const eventHandlers2 = {
+    onMouseEnter: !isTouchDevice ? pauseAnimation2 : undefined,
+    onMouseLeave: !isTouchDevice ? runAnimation2 : undefined,
+    onDragStart: pauseAnimation2,
+    onDragEnd: runAnimation2,
   };
 
   return (
-    <div id="Testimonials" className="w-full bg-black text-white px-5 sm:px-8 md:px-12 lg:px-20 xl:px-40 py-8 sm:py-12 md:py-15 flex flex-col">
+    <div id="Testimonials" className="w-full bg-black text-white px-5 sm:px-8 md:px-12 lg:px-20 xl:px-40 py-8 sm:py-12 md:py-15 flex flex-col overflow-hidden">
       {/* Testimonials Heading */}
       <div className="flex whitespace-nowrap gap-3 sm:flex-row items-center mb-8 sm:mb-12 md:mb-16">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-0 sm:mr-6">
@@ -93,7 +204,6 @@ const Testimonials = () => {
             HEAR FROM THE DECISION MAKERS THEMSELVES!
           </p>
         </div>
-
         <AnimatePresence mode="wait">
           <motion.div
             key={selectedTestimonial.id}
@@ -103,12 +213,9 @@ const Testimonials = () => {
             transition={{ duration: 0.5 }}
             className="max-w-4xl mx-auto text-center flex flex-col justify-center h-[400px]"
           >
-            {/* Quote */}
             <blockquote className="text-2xl sm:text-3xl md:text-4xl font-light leading-relaxed mb-12 text-gray-200">
               "{selectedTestimonial.quote}"
             </blockquote>
-
-            {/* Author Info */}
             <div className="flex flex-col items-center">
               <motion.img
                 src={selectedTestimonial.avatar}
@@ -125,8 +232,6 @@ const Testimonials = () => {
                 {selectedTestimonial.company}
               </p>
             </div>
-
-            {/* Category indicator */}
             <div className="mt-6">
               <span className="inline-block w-2 h-2 bg-orange-600 rounded-full"></span>
             </div>
@@ -134,73 +239,54 @@ const Testimonials = () => {
         </AnimatePresence>
       </div>
 
-      {/* Horizontal Scrolling Testimonials */}
-      <div className="relative">
-        <div className="flex overflow-hidden pb-4">
-          <motion.div
-            className="flex flex-shrink-0"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{
-              duration: 30,
-              ease: "linear",
-              repeat: Infinity,
-            }}
-          >
-            {[...testimonialsData, ...testimonialsData].map((testimonial, index) => (
-              <motion.div
-                key={`${testimonial.id}-${index}`}
-                className={`flex-shrink-0 w-80 p-6 rounded-2xl cursor-pointer transition-all duration-300 mr-6 ${
-                  selectedTestimonial.id === testimonial.id
-                    ? 'bg-gray-1000 border-2 border-orange-600/50 shadow-[0_0_20px_rgba(255,107,0,0.3)]'
-                    : 'bg-gray-900 border-2 border-transparent hover:border-orange-600/30 hover:shadow-[0_0_15px_rgba(255,107,0,0.2)]'
-                }`}
-                onClick={() => handleTestimonialClick(testimonial)}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <div className="flex items-start gap-4">
-                  <img
-                    src={testimonial.avatar}
-                    alt={testimonial.author}
-                    className="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                  />
-                  <div className="flex-1">
-                    <p className="text-sm text-gray-300 mb-3 line-clamp-3">
-                      "{testimonial.quote}"
-                    </p>
-                    <div>
-                      <h4 className="text-white font-semibold text-sm">
-                        {testimonial.author}
-                      </h4>
-                      <p className="text-gray-400 text-xs">
-                        {testimonial.position}
-                      </p>
-                      <p className="text-orange-400 text-xs font-medium">
-                        {testimonial.company}
-                      </p>
-                    </div>
+      {/* Horizontal Scrolling Testimonials - Row 1 */}
+      <div className={`relative cursor-grab active:cursor-grabbing overflow-hidden`}>
+        <motion.div
+          ref={row1Ref}
+          className="flex flex-shrink-0"
+          style={{ x: motionX }}
+          drag="x"
+          dragConstraints={{ right: 0, left: dragConstraints }}
+          dragMomentum={false}
+          {...eventHandlers1}
+        >
+          {[...testimonialsData, ...testimonialsData].map((testimonial, index) => (
+            <motion.div
+              key={`${testimonial.id}-${index}`}
+              className={`flex-shrink-0 w-80 p-6 rounded-2xl cursor-pointer transition-all duration-300 mr-6 ${
+                selectedTestimonial.id === testimonial.id
+                  ? 'bg-gray-1000 border-2 border-orange-600/50 shadow-[0_0_20px_rgba(255,107,0,0.3)]'
+                  : 'bg-gray-900 border-2 border-transparent hover:border-orange-600/30 hover:shadow-[0_0_15px_rgba(255,107,0,0.2)]'
+              }`}
+              onClick={() => setSelectedTestimonial(testimonial)}
+            >
+              <div className="flex items-start gap-4">
+                <img src={testimonial.avatar} alt={testimonial.author} className="w-12 h-12 rounded-full object-cover flex-shrink-0" />
+                <div className="flex-1">
+                  <p className="text-sm text-gray-300 mb-3 line-clamp-3">"{testimonial.quote}"</p>
+                  <div>
+                    <h4 className="text-white font-semibold text-sm">{testimonial.author}</h4>
+                    <p className="text-gray-400 text-xs">{testimonial.position}</p>
+                    <p className="text-orange-400 text-xs font-medium">{testimonial.company}</p>
                   </div>
                 </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
 
-      {/* Second row moving in opposite direction */}
-      <div className="relative mt-6">
-        <div className="flex overflow-hidden pb-4">
-          <motion.div
-            className="flex flex-shrink-0"
-            animate={{ x: ["-50%", "0%"] }}
-            transition={{
-              duration: 30,
-              ease: "linear",
-              repeat: Infinity,
-            }}
-          >
-            {[...testimonialsData.slice().reverse(), ...testimonialsData.slice().reverse()].map((testimonial, index) => (
+      {/* Horizontal Scrolling Testimonials - Row 2 */}
+      <div className={`relative mt-6 cursor-grab active:cursor-grabbing overflow-hidden`}>
+        <motion.div
+          className="flex flex-shrink-0"
+          style={{ x: motionXReverse }}
+          drag="x"
+          dragConstraints={{ right: 0, left: dragConstraints }}
+          dragMomentum={false}
+          {...eventHandlers2}
+        >
+          {[...testimonialsData.slice().reverse(), ...testimonialsData.slice().reverse()].map((testimonial, index) => (
             <motion.div
               key={`reverse-${testimonial.id}-${index}`}
               className={`flex-shrink-0 w-80 p-6 rounded-2xl cursor-pointer transition-all duration-300 mr-6 ${
@@ -208,44 +294,23 @@ const Testimonials = () => {
                   ? 'bg-gray-1000 border-2 border-orange-600/50 shadow-[0_0_20px_rgba(255,107,0,0.3)]'
                   : 'bg-gray-900 border-2 border-transparent hover:border-orange-600/30 hover:shadow-[0_0_15px_rgba(255,107,0,0.2)]'
               }`}
-              onClick={() => handleTestimonialClick(testimonial)}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
+              onClick={() => setSelectedTestimonial(testimonial)}
             >
               <div className="flex items-start gap-4">
-                <img
-                  src={testimonial.avatar}
-                  alt={testimonial.author}
-                  className="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                />
+                <img src={testimonial.avatar} alt={testimonial.author} className="w-12 h-12 rounded-full object-cover flex-shrink-0" />
                 <div className="flex-1">
-                  <p className="text-sm text-gray-300 mb-3 line-clamp-3">
-                    "{testimonial.quote}"
-                  </p>
+                  <p className="text-sm text-gray-300 mb-3 line-clamp-3">"{testimonial.quote}"</p>
                   <div>
-                    <h4 className="text-white font-semibold text-sm">
-                      {testimonial.author}
-                    </h4>
-                    <p className="text-gray-400 text-xs">
-                      {testimonial.position}
-                    </p>
-                    <p className="text-orange-400 text-xs font-medium">
-                      {testimonial.company}
-                    </p>
+                    <h4 className="text-white font-semibold text-sm">{testimonial.author}</h4>
+                    <p className="text-gray-400 text-xs">{testimonial.position}</p>
+                    <p className="text-orange-400 text-xs font-medium">{testimonial.company}</p>
                   </div>
                 </div>
               </div>
             </motion.div>
           ))}
-          </motion.div>
-        </div>
+        </motion.div>
       </div>
-
-      {/* Scroll indicator */}
-      {/* <div className="flex justify-center mt-6">
-        <p className="text-gray-500 text-sm">Click any testimonial to view details</p>
-      </div> */}
     </div>
   );
 };
