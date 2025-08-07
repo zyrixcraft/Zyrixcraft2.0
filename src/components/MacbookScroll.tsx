@@ -1,9 +1,18 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import '../App.css'
-import src from '../assets/DashBoard.jpg'
 import Laptop from '../assets/Laptop.png'
+import src from '../assets/DashBoard.png'
+import src2 from '../assets/DashBoard2.png'
+import src3 from '../assets/DashBoard3.png'
+
+// Array of images for the slideshow
+const srcs = [
+  src,
+  src2,
+  src3,
+];
 
 type MacbookScrollProps = {
   className?: string;
@@ -15,10 +24,20 @@ type LidProps = {
   scaleY: any;
   rotate: any;
   translate: any;
-  src: string;
+  srcs: string[];
 };
 
-export const Lid: React.FC<LidProps> = ({ scaleX, scaleY, rotate, translate, src }) => {
+export const Lid: React.FC<LidProps> = ({ scaleX, scaleY, rotate, translate, srcs }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Slideshow logic to cycle through images
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % srcs.length);
+    }, 4000); // Change image every 4 seconds
+    return () => clearInterval(timer);
+  }, [srcs.length]);
+
   return (
     <div className="relative mx-auto flex justify-center items-center [perspective:800px] w-full max-w-[90vw] tablet:max-w-[800px] md:max-w-[1000px]">
       {/* Laptop Image */}
@@ -41,18 +60,35 @@ export const Lid: React.FC<LidProps> = ({ scaleX, scaleY, rotate, translate, src
         className="absolute inset-0 mx-auto h-96 w-full max-w-[32rem] rounded-2xl bg-[#010101] p-2 tablet:max-w-[26rem] md:max-w-[32rem]"
       >
         <div className="absolute inset-0 rounded-lg bg-[#272729]" />
-        <img
-          src={src}
-          alt="aceternity logo"
-          className="absolute inset-0 h-full w-full rounded-lg object-cover object-left-top"
-        />
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={currentIndex}
+            src={srcs[currentIndex]}
+            alt="Dashboard slideshow"
+            className="absolute inset-0 h-full w-full rounded-lg object-cover"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
+          />
+        </AnimatePresence>
       </motion.div>
     </div>
   );
 };
 
 // Mobile-specific Lid component
-export const MobileLid: React.FC<LidProps> = ({ scaleX, scaleY, rotate, translate, src }) => {
+export const MobileLid: React.FC<LidProps> = ({ scaleX, scaleY, rotate, translate, srcs }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    // Slideshow logic for mobile
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % srcs.length);
+        }, 4000);
+        return () => clearInterval(timer);
+    }, [srcs.length]);
+
   return (
     <div className="relative mx-auto flex justify-center items-center [perspective:300px] w-full max-w-[320px]">
       {/* Laptop Image */}
@@ -75,11 +111,18 @@ export const MobileLid: React.FC<LidProps> = ({ scaleX, scaleY, rotate, translat
         className="absolute inset-0 mx-auto h-[150px] w-[254px] rounded-xl bg-[#010101] p-1.5 top-[0px]"
       >
         <div className="absolute inset-0 rounded-lg bg-[#272729]" />
-        <img
-          src={src}
-          alt="aceternity logo"
-          className="absolute inset-0 h-full w-full rounded-lg object-cover object-left-top"
-        />
+        <AnimatePresence mode="wait">
+            <motion.img
+                key={currentIndex}
+                src={srcs[currentIndex]}
+                alt="Dashboard slideshow"
+                className="absolute inset-0 h-full w-full rounded-lg object-cover"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8 }}
+            />
+        </AnimatePresence>
       </motion.div>
     </div>
   );
@@ -148,7 +191,7 @@ export const DesktopMacbookScroll: React.FC<MacbookScrollProps> = ({ className =
         
         <div className="w-full flex justify-center overflow-visible pb-[30vh]">
           <Lid
-            src={src}
+            srcs={srcs}
             scaleX={scaleX}
             scaleY={scaleY}
             rotate={rotate}
@@ -224,7 +267,7 @@ export const TabletMacbookScroll: React.FC<MacbookScrollProps> = ({ className = 
 
         <div className="mt-8 w-full">
           <Lid
-            src={src}
+            srcs={srcs}
             scaleX={scaleX}
             scaleY={scaleY}
             rotate={rotate}
@@ -301,7 +344,7 @@ export const MobileMacbookScroll: React.FC<MacbookScrollProps> = ({ className = 
         
         <div className="w-full mt-2 flex justify-center">
           <MobileLid
-            src={src}
+            srcs={srcs}
             scaleX={scaleX}
             scaleY={scaleY}
             rotate={rotate}
