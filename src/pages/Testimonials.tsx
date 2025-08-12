@@ -199,7 +199,8 @@ const Testimonials = () => {
 
       {/* Main Testimonial Display */}
       <div className="flex flex-col items-center justify-center min-h-[60vh] mb-16">
-        <div className="text-center mb-8">
+        {/* FIX: Increased margin-bottom from mb-8 to mb-12 to prevent overlap */}
+        <div className="text-center mb-12">
           <p className="text-orange-600 text-sm uppercase tracking-wider mb-4">
             HEAR FROM THE DECISION MAKERS THEMSELVES!
           </p>
