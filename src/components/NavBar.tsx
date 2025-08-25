@@ -54,9 +54,11 @@ const NavBar: React.FC<NavBarProps> = ({ setIsOpen }) => {
             <div className="pseudo-text-effect cursor-pointer" data-after="Portfolio" onClick={() => handleClick('Portfolio')}>
                 <span>Portfolio</span>
             </div>
+            {/* Temporarily disabled Testimonials navigation
             <div className="pseudo-text-effect cursor-pointer" data-after="Testimonials" onClick={() => handleClick('Testimonials')}>
                 <span>Testimonials</span>
             </div>
+            */}
             <div className="pseudo-text-effect cursor-pointer" data-after="Contact Us" onClick={() => handleClick('Footer')}>
                 <span>Contact Us</span>
             </div>
